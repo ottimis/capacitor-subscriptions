@@ -1,4 +1,4 @@
-var capacitorSubscriptions = (function (exports, core) {
+var capacitorIap = (function (exports, core) {
     'use strict';
 
     const Subscriptions = core.registerPlugin('Subscriptions', {

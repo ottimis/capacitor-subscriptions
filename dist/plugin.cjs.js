@@ -25,7 +25,7 @@ class SubscriptionsWeb extends core.WebPlugin {
             responseMessage: 'Incompatible with web',
         };
     }
-    async getCurrentEntitlements() {
+    async getCurrentEntitlements(options) {
         return {
             responseCode: -1,
             responseMessage: 'Incompatible with web',

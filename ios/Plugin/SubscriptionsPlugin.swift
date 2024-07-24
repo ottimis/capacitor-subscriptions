@@ -40,14 +40,15 @@ public class SubscriptionsPlugin: CAPPlugin {
     @available(iOS 15.0.0, *)
     @objc func purchaseProduct(_ call: CAPPluginCall) {
         
-        guard let productIdentifier = call.getString("productIdentifier") as? String else {
+        guard let productIdentifier = call.getString("productIdentifier") else {
            call.reject("Must provide a productID")
            return;
         }
+        let accountId = call.getString("accountId")
 
         async {
 
-            let response = await implementation.purchaseProduct(productIdentifier);
+            let response = await implementation.purchaseProduct(productIdentifier, accountId);
             call.resolve(response);
 
         }
@@ -56,12 +57,11 @@ public class SubscriptionsPlugin: CAPPlugin {
 
     @available(iOS 15.0.0, *)
     @objc func getCurrentEntitlements(_ call: CAPPluginCall) {
+        let sync = call.getBool("sync") ?? false
         
         async {
-
-            let response = await implementation.getCurrentEntitlements();
+            let response = await implementation.getCurrentEntitlements(sync: sync);
             call.resolve(response);
-
         }
 
     }

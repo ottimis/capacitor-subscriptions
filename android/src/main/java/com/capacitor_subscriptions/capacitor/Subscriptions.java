@@ -1,4 +1,4 @@
-package com.capicitor_subscriptions.capacitor;
+package com.capacitor_subscriptions.capacitor;
 
 import android.app.Activity;
 import android.util.Log;
@@ -316,7 +316,7 @@ public class Subscriptions {
 
     }
 
-    public void purchaseProduct(String productIdentifier, PluginCall call) {
+    public void purchaseProduct(String productIdentifier, String accountId, PluginCall call) {
 
         JSObject response = new JSObject();
 
@@ -338,7 +338,7 @@ public class Subscriptions {
 
                         try {
                             ProductDetails productDetails = productDetailsList.get(0);
-                            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                            BillingFlowParams.Builder builder = BillingFlowParams.newBuilder()
                                     .setProductDetailsParamsList(
                                             List.of(
                                                     BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -346,8 +346,11 @@ public class Subscriptions {
                                                             .setOfferToken(productDetails.getSubscriptionOfferDetails().get(0).getOfferToken())
                                                             .build()
                                             )
-                                    )
-                                    .build();
+                                    );
+                            if (accountId != null) {
+                                builder.setObfuscatedAccountId(accountId);
+                            }
+                            BillingFlowParams billingFlowParams = builder.build();
                             BillingResult result = billingClient.launchBillingFlow(this.activity, billingFlowParams);
                             Log.i("RESULT", result.toString());
                             response.put("responseCode", 0);

@@ -1,7 +1,7 @@
 {
-  "name": "capacitor-subscriptions",
-  "version": "1.0.2",
-  "description": "A capacitor plugin which simplifies subscription handling - implementing StoreKit 2 and Google Billing",
+  "name": "@ottimis/capacitor-iap",
+  "version": "0.0.1",
+  "description": "A capacitor plugin which manage IAP handling - implementing StoreKit 2 and Google Billing",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -13,19 +13,27 @@
     "ios/Plugin/",
     "CapacitorSubscriptions.podspec"
   ],
-  "author": "Craig Ronald",
+  "authors": [
+    {
+      "name": "Craig Ronald"
+    },
+    {
+      "name": "MM"
+    }
+  ],
   "license": "none",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CraigRonald555/capacitor-subscriptions.git.git"
+    "url": "git+https://github.com/ottimis/capacitor-subscriptions.git"
   },
   "bugs": {
-    "url": "https://github.com/CraigRonald555/capacitor-subscriptions.git/issues"
+    "url": "https://github.com/ottimis/capacitor-subscriptions.git/issues"
   },
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "native",
+    "iap"
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",

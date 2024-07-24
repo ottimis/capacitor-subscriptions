@@ -21,8 +21,12 @@ export interface SubscriptionsPlugin {
      */
     purchaseProduct(options: {
         productIdentifier: string;
+        accountId?: string;
+        acknowledgePurchases?: boolean;
     }): Promise<PurchaseProductResponse>;
-    getCurrentEntitlements(): Promise<CurrentEntitlementsResponse>;
+    getCurrentEntitlements(options: {
+        sync?: boolean;
+    }): Promise<CurrentEntitlementsResponse>;
     getLatestTransaction(options: {
         productIdentifier: string;
     }): Promise<LatestTransactionResponse>;
@@ -46,6 +50,7 @@ export interface Transaction {
     transactionId: string;
     originalStartDate: string;
     isTrial?: boolean;
+    jws?: string;
 }
 export interface LatestTransactionResponse {
     responseCode: LatestTransactionResponseCode;
@@ -58,12 +63,14 @@ export interface CurrentEntitlementsResponse {
     responseCode: CurrentEntitlementsResponseCode;
     responseMessage: CurrentEntitlementsResponseMessage;
     data?: Transaction[];
+    receipt?: string;
 }
 export type CurrentEntitlementsResponseCode = -1 | 0 | 1 | 2;
 export type CurrentEntitlementsResponseMessage = "Incompatible with web" | "Successfully found all entitlements across all product types" | "No entitlements were found" | "Unknown problem trying to retrieve entitlements";
 export interface PurchaseProductResponse {
     responseCode: PurchaseProductIOSResponseCode | PurchaseProductAndroidResponseCode;
     responseMessage: PurchaseProductIOSResponseMessage | PurchaseProductAndroidResponseMessage;
+    receipt?: string;
 }
 export type PurchaseProductIOSResponseCode = -1 | 0 | 1 | 2 | 3 | 4 | 5;
 export type PurchaseProductIOSResponseMessage = "Incompatible with web" | "Successfully purchased product" | "Could not find a product matching the given productIdentifier" | "Product seems to have been purchased but the transaction failed verification" | "User closed the native popover before purchasing" | "Product request made but is currently pending - likely due to parental restrictions" | "An unknown error occurred whilst in the purchasing process";

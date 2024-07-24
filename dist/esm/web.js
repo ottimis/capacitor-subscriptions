@@ -21,7 +21,8 @@ export class SubscriptionsWeb extends WebPlugin {
             responseMessage: 'Incompatible with web',
         };
     }
-    async getCurrentEntitlements() {
+    async getCurrentEntitlements(options) {
+        options;
         return {
             responseCode: -1,
             responseMessage: 'Incompatible with web',

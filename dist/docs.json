@@ -46,12 +46,12 @@
       },
       {
         "name": "purchaseProduct",
-        "signature": "(options: { productIdentifier: string; }) => Promise<PurchaseProductResponse>",
+        "signature": "(options: { productIdentifier: string; accountId?: string; acknowledgePurchases?: boolean; }) => Promise<PurchaseProductResponse>",
         "parameters": [
           {
             "name": "options",
             "docs": "",
-            "type": "{ productIdentifier: string; }"
+            "type": "{ productIdentifier: string; accountId?: string | undefined; acknowledgePurchases?: boolean | undefined; }"
           }
         ],
         "returns": "Promise<PurchaseProductResponse>",
@@ -69,8 +69,14 @@
       },
       {
         "name": "getCurrentEntitlements",
-        "signature": "() => Promise<CurrentEntitlementsResponse>",
-        "parameters": [],
+        "signature": "(options: { sync?: boolean; }) => Promise<CurrentEntitlementsResponse>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ sync?: boolean | undefined; }"
+          }
+        ],
         "returns": "Promise<CurrentEntitlementsResponse>",
         "tags": [],
         "docs": "",
@@ -145,7 +151,7 @@
           "PluginListenerHandle",
           "AndroidPurchasedTrigger"
         ],
-        "slug": "addlistenerandroid-purchase-response"
+        "slug": "addlistenerandroid-purchase-response-"
       }
     ],
     "properties": []
@@ -250,6 +256,13 @@
             "PurchaseProductAndroidResponseMessage"
           ],
           "type": "'Incompatible with web' | 'Could not find a product matching the given productIdentifier' | 'Successfully purchased product' | 'Product seems to have been purchased but the transaction failed verification' | 'User closed the native popover before purchasing' | 'Product request made but is currently pending - likely due to parental restrictions' | 'An unknown error occurred whilst in the purchasing process' | 'Successfully opened native popover' | 'Failed to open native popover'"
+        },
+        {
+          "name": "receipt",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
         }
       ]
     },
@@ -286,6 +299,13 @@
             "Transaction"
           ],
           "type": "Transaction[] | undefined"
+        },
+        {
+          "name": "receipt",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
         }
       ]
     },
@@ -337,6 +357,13 @@
           "docs": "",
           "complexTypes": [],
           "type": "boolean | undefined"
+        },
+        {
+          "name": "jws",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
         }
       ]
     },

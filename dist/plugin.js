@@ -24,7 +24,7 @@ var capacitorSubscriptions = (function (exports, core) {
                 responseMessage: 'Incompatible with web',
             };
         }
-        async getCurrentEntitlements() {
+        async getCurrentEntitlements(options) {
             return {
                 responseCode: -1,
                 responseMessage: 'Incompatible with web',

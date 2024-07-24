@@ -86,7 +86,7 @@ import UIKit
     }
 
     @available(iOS 15.0.0, *)
-    @objc public func purchaseProduct(_ productIdentifier: String) async -> PluginCallResultData {
+    @objc public func purchaseProduct(_ productIdentifier: String, _ accountId: String?) async -> PluginCallResultData {
         
         do {
 
@@ -96,7 +96,23 @@ import UIKit
                     "responseMessage": "Could not find a product matching the given productIdentifier"
                 ];
             };
-            let result: Product.PurchaseResult = try await product.purchase();
+            // Add appAccountToken to purchase
+            var purchaseOptions = Set<Product.PurchaseOption>()
+            
+            if (accountId != nil)  {
+                guard let accountUUID = UUID(uuidString: accountId!) else {
+                    return [
+                        "responseCode": 1,
+                        "responseMessage": "Invalid accountId"
+                    ]
+                }
+                let appAccountId = Product.PurchaseOption.appAccountToken(accountUUID)
+                purchaseOptions.insert(appAccountId)
+                let idApp = Product.PurchaseOption.custom(key: "instanceId", value: "1234")
+                purchaseOptions.insert(idApp)
+            }
+            
+            let result: Product.PurchaseResult = try await product.purchase(options: purchaseOptions);
 
             switch result {
 
@@ -108,11 +124,16 @@ import UIKit
                             "responseMessage": "Product seems to have been purchased but the transaction failed verification"
                         ];
                     };
+                
+                    let receiptPath = Bundle.main.appStoreReceiptURL!
+                    let receiptData = NSData(contentsOf: receiptPath)
+                    let receiptString = receiptData?.base64EncodedString() ?? ""
             
                     await transaction.finish();
                     return [
                         "responseCode": 0,
-                        "responseMessage": "Successfully purchased product"
+                        "responseMessage": "Successfully purchased product",
+                        "receipt": receiptString
                     ];
 
                 case .userCancelled:
@@ -149,26 +170,32 @@ import UIKit
     }
     
     @available(iOS 15.0.0, *)
-    @objc public func getCurrentEntitlements() async -> PluginCallResultData {
+    @objc public func getCurrentEntitlements(sync: Bool) async -> PluginCallResultData {
 
         do {
+            if (sync)   {
+                try await AppStore.sync()
+            }
             
-            var transactionDictionary = [String: [String: Any]]();
+            var transactions: [Any] = [];
             
 //            Loop through each verification result in currentEntitlements, verify the transaction
 //            then add it to the transactionDictionary if verified.
             for await verification in Transaction.currentEntitlements {
-                
+
                 let transaction: Transaction? = checkVerified(verification) as? Transaction
                 if(transaction != nil) {
 
-                    transactionDictionary[String(transaction!.id)] = [
-                        "productIdentifier": transaction!.productID,
-                        "originalStartDate": transaction!.originalPurchaseDate,
-                        "originalId": transaction!.originalID,
-                        "transactionId": transaction!.id,
-                        "expiryDate": transaction!.expirationDate
-                    ]
+                    transactions.append(
+                        [
+                            "productIdentifier": transaction!.productID,
+                            "originalStartDate": transaction!.originalPurchaseDate,
+                            "originalId": transaction!.originalID,
+                            "transactionId": transaction!.id,
+                            "expiryDate": transaction!.expirationDate as Any,
+                            "jws": verification.jwsRepresentation
+                        ]
+                    )
                     
                 }
                 
@@ -176,12 +203,11 @@ import UIKit
             
 //            If we have one or more entitlements in transactionDictionary
 //            we want the response to include it in the data property
-            if(transactionDictionary.count > 0) {
-            
+            if(transactions.count > 0) {
                 let response = [
                     "responseCode": 0,
                     "responseMessage": "Successfully found all entitlements across all product types",
-                    "data": transactionDictionary
+                    "data": transactions,
                 ] as [String : Any]
                 
                 return response;
@@ -225,28 +251,10 @@ import UIKit
                 ]
             }
             
-            print("expiration" + String(decoding: formatDate(transaction.expirationDate)!, as: UTF8.self))
-            print("transaction.expirationDate", transaction.expirationDate)
-            print("transaction.originalID", transaction.originalID);
-            
-            if let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
-                FileManager.default.fileExists(atPath: appStoreReceiptURL.path) {
-
-
-                do {
-                    let receiptData = try Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)
-                    print("Receipt Data: ", receiptData)
-
-
-                    let receiptString = receiptData.base64EncodedString(options: [Data.Base64EncodingOptions.endLineWithCarriageReturn])
-                    print("Receipt String: ", receiptString)
-
-
-                    // Read receiptData.
-                }
-                catch { print("Couldn't read receipt data with error: " + error.localizedDescription) }
+            if (transaction.expirationDate != nil)  {
+                print("expiration" + String(decoding: formatDate(transaction.expirationDate)!, as: UTF8.self))
             }
-
+            print("transaction.originalID", transaction.originalID);
             
             return [
                 "responseCode": 0,
@@ -336,5 +344,4 @@ import UIKit
         }
 
     }
-
 }

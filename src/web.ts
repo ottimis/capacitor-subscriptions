@@ -17,14 +17,15 @@ export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
       responseMessage: 'Incompatible with web',
     }
   }
-  async purchaseProduct(options: { productIdentifier: string }): Promise< PurchaseProductResponse > {
+  async purchaseProduct(options: { productIdentifier: string, accountId?: string, acknowledgePurchases?: boolean }): Promise< PurchaseProductResponse > {
     options;
     return {
       responseCode: -1,
       responseMessage: 'Incompatible with web',
     }
   }
-  async getCurrentEntitlements(): Promise< CurrentEntitlementsResponse > {
+  async getCurrentEntitlements(options: { sync: boolean }): Promise< CurrentEntitlementsResponse > {
+    options;
     return {
       responseCode: -1,
       responseMessage: 'Incompatible with web',

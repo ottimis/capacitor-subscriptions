@@ -108,8 +108,6 @@ import UIKit
                 }
                 let appAccountId = Product.PurchaseOption.appAccountToken(accountUUID)
                 purchaseOptions.insert(appAccountId)
-                let idApp = Product.PurchaseOption.custom(key: "instanceId", value: "1234")
-                purchaseOptions.insert(idApp)
             }
             
             let result: Product.PurchaseResult = try await product.purchase(options: purchaseOptions);
@@ -124,16 +122,15 @@ import UIKit
                             "responseMessage": "Product seems to have been purchased but the transaction failed verification"
                         ];
                     };
-                
-                    let receiptPath = Bundle.main.appStoreReceiptURL!
-                    let receiptData = NSData(contentsOf: receiptPath)
-                    let receiptString = receiptData?.base64EncodedString() ?? ""
             
                     await transaction.finish();
                     return [
                         "responseCode": 0,
                         "responseMessage": "Successfully purchased product",
-                        "receipt": receiptString
+                        "data": [
+                            "productId": transaction.productID,
+                            "jws": verification.jwsRepresentation
+                        ]
                     ];
 
                 case .userCancelled:
@@ -188,11 +185,7 @@ import UIKit
 
                     transactions.append(
                         [
-                            "productIdentifier": transaction!.productID,
-                            "originalStartDate": transaction!.originalPurchaseDate,
-                            "originalId": transaction!.originalID,
-                            "transactionId": transaction!.id,
-                            "expiryDate": transaction!.expirationDate as Any,
+                            "productId": transaction!.productID,
                             "jws": verification.jwsRepresentation
                         ]
                     )
@@ -243,7 +236,8 @@ import UIKit
 
             };
             
-            guard let transaction: Transaction = checkVerified(await product.latestTransaction) as? Transaction else {
+            let latestTransaction = await product.latestTransaction
+            guard let transaction: Transaction = checkVerified(latestTransaction) as? Transaction else {
                 // The user hasn't purchased this product.
                 return [
                     "responseCode": 2,
@@ -260,11 +254,8 @@ import UIKit
                 "responseCode": 0,
                 "responseMessage": "Latest transaction found",
                 "data": [
-                    "productIdentifier": transaction.productID,
-                    "originalStartDate": transaction.originalPurchaseDate,
-                    "originalId": transaction.originalID,
-                    "transactionId": transaction.id,
-                    "expiryDate": transaction.expirationDate
+                    "productId": transaction.productID,
+                    "jws": latestTransaction?.jwsRepresentation
                 ]
             ];
             
@@ -276,6 +267,46 @@ import UIKit
             ]
         }
 
+    }
+    
+    @available(iOS 15.0.0, *)
+    @objc public func refundLatestTransaction(_ productIdentifier: String) async -> PluginCallResultData {
+
+        do {
+            guard let product: Product = await getProduct(productIdentifier) as? Product else {
+                return [
+                    "responseCode": 1,
+                    "responseMessage": "Could not find a product matching the given productIdentifier"
+                ]
+
+            };
+            
+            let latestTransaction = await product.latestTransaction
+            guard let transaction: Transaction = checkVerified(latestTransaction) as? Transaction else {
+                // The user hasn't purchased this product.
+                return [
+                    "responseCode": 2,
+                    "responseMessage": "No transaction for given productIdentifier, or it could not be verified"
+                ]
+            }
+            
+            guard let scene = await UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return [
+                    "responseCode": 4,
+                    "responseMessage": "Problem getting UIScene"
+                ]
+            }
+            try await transaction.beginRefundRequest(in: scene)
+        } catch {
+            print("Error:" + error.localizedDescription);
+            return [
+                "responseCode": 3,
+                "responseMessage": "Unknown problem trying to refund latest transaction"
+            ]
+        }
+        return [
+            "responseCode": 0
+        ]
     }
 
     @available(iOS 15.0.0, *)

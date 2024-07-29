@@ -26,9 +26,17 @@ export class SubscriptionsWeb extends WebPlugin {
         return {
             responseCode: -1,
             responseMessage: 'Incompatible with web',
+            data: []
         };
     }
     async getLatestTransaction(options) {
+        options;
+        return {
+            responseCode: -1,
+            responseMessage: 'Incompatible with web',
+        };
+    }
+    async refundLatestTransaction(options) {
         options;
         return {
             responseCode: -1,

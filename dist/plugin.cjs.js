@@ -29,9 +29,16 @@ class SubscriptionsWeb extends core.WebPlugin {
         return {
             responseCode: -1,
             responseMessage: 'Incompatible with web',
+            data: []
         };
     }
     async getLatestTransaction(options) {
+        return {
+            responseCode: -1,
+            responseMessage: 'Incompatible with web',
+        };
+    }
+    async refundLatestTransaction(options) {
         return {
             responseCode: -1,
             responseMessage: 'Incompatible with web',

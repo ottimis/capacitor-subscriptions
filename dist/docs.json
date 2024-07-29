@@ -104,6 +104,24 @@
         "slug": "getlatesttransaction"
       },
       {
+        "name": "refundLatestTransaction",
+        "signature": "(options: { productIdentifier: string; }) => Promise<RefundLatestTransactionResponse>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ productIdentifier: string; }"
+          }
+        ],
+        "returns": "Promise<RefundLatestTransactionResponse>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "RefundLatestTransactionResponse"
+        ],
+        "slug": "refundlatesttransaction"
+      },
+      {
         "name": "manageSubscriptions",
         "signature": "() => any",
         "parameters": [],
@@ -258,7 +276,39 @@
           "type": "'Incompatible with web' | 'Could not find a product matching the given productIdentifier' | 'Successfully purchased product' | 'Product seems to have been purchased but the transaction failed verification' | 'User closed the native popover before purchasing' | 'Product request made but is currently pending - likely due to parental restrictions' | 'An unknown error occurred whilst in the purchasing process' | 'Successfully opened native popover' | 'Failed to open native popover'"
         },
         {
-          "name": "receipt",
+          "name": "data",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "Transaction"
+          ],
+          "type": "Transaction"
+        }
+      ]
+    },
+    {
+      "name": "Transaction",
+      "slug": "transaction",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "productId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "jws",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "purchaseToken",
           "tags": [],
           "docs": "",
           "complexTypes": [],
@@ -298,72 +348,7 @@
           "complexTypes": [
             "Transaction"
           ],
-          "type": "Transaction[] | undefined"
-        },
-        {
-          "name": "receipt",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | undefined"
-        }
-      ]
-    },
-    {
-      "name": "Transaction",
-      "slug": "transaction",
-      "docs": "",
-      "tags": [],
-      "methods": [],
-      "properties": [
-        {
-          "name": "productIdentifier",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string"
-        },
-        {
-          "name": "expiryDate",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string"
-        },
-        {
-          "name": "originalId",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string"
-        },
-        {
-          "name": "transactionId",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string"
-        },
-        {
-          "name": "originalStartDate",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string"
-        },
-        {
-          "name": "isTrial",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "boolean | undefined"
-        },
-        {
-          "name": "jws",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "string | undefined"
+          "type": "Transaction[]"
         }
       ]
     },
@@ -404,6 +389,33 @@
       ]
     },
     {
+      "name": "RefundLatestTransactionResponse",
+      "slug": "refundlatesttransactionresponse",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "responseCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "RefundLatestTransactionResponseCode"
+          ],
+          "type": "RefundLatestTransactionResponseCode"
+        },
+        {
+          "name": "responseMessage",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "RefundLatestTransactionResponseMessage"
+          ],
+          "type": "RefundLatestTransactionResponseMessage"
+        }
+      ]
+    },
+    {
       "name": "PluginListenerHandle",
       "slug": "pluginlistenerhandle",
       "docs": "",
@@ -427,11 +439,18 @@
       "methods": [],
       "properties": [
         {
-          "name": "fired",
+          "name": "successful",
           "tags": [],
           "docs": "",
           "complexTypes": [],
           "type": "boolean"
+        },
+        {
+          "name": "purchaseToken",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
         }
       ]
     }
@@ -680,6 +699,68 @@
         },
         {
           "text": "\"Unknown problem trying to retrieve latest transaction\"",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "RefundLatestTransactionResponseCode",
+      "slug": "refundlatesttransactionresponsecode",
+      "docs": "",
+      "types": [
+        {
+          "text": "-1",
+          "complexTypes": []
+        },
+        {
+          "text": "0",
+          "complexTypes": []
+        },
+        {
+          "text": "1",
+          "complexTypes": []
+        },
+        {
+          "text": "2",
+          "complexTypes": []
+        },
+        {
+          "text": "3",
+          "complexTypes": []
+        },
+        {
+          "text": "4",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "RefundLatestTransactionResponseMessage",
+      "slug": "refundlatesttransactionresponsemessage",
+      "docs": "",
+      "types": [
+        {
+          "text": "\"Incompatible with web\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"Successfully found the latest transaction matching given productIdentifier\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"Could not find a product matching the given productIdentifier\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"No transaction for given productIdentifier, or it could not be verified\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"Unknown problem trying to refund latest transaction\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"Problem getting UIScene\"",
           "complexTypes": []
         }
       ]

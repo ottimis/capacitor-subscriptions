@@ -27,6 +27,8 @@ export interface SubscriptionsPlugin {
 
     getLatestTransaction(options: { productIdentifier: string }): Promise<LatestTransactionResponse>;
 
+    refundLatestTransaction(options: { productIdentifier: string }): Promise<RefundLatestTransactionResponse>;
+
     manageSubscriptions(): any;
 
     setGoogleVerificationDetails(options: { googleVerifyEndpoint: string, bid: string }): void;
@@ -48,13 +50,9 @@ export interface Product {
 }
 
 export interface Transaction {
-    productIdentifier: string;
-    expiryDate: string;
-    originalId: string;
-    transactionId: string;
-    originalStartDate: string;
-    isTrial?: boolean;
+    productId: string;
     jws?: string;
+    purchaseToken?: string;
 }
 
 // latestTransactions interface and types
@@ -73,13 +71,21 @@ export type LatestTransactionResponseMessage =
     "No transaction for given productIdentifier, or it could not be verified" |
     "Unknown problem trying to retrieve latest transaction"
 
+// refundLatestTransaction interface and types
+export interface RefundLatestTransactionResponse {
+    responseCode: RefundLatestTransactionResponseCode;
+    responseMessage: RefundLatestTransactionResponseMessage;
+}
+
+export type RefundLatestTransactionResponseCode = -1 | 0 | 1 | 2 | 3 | 4;
+export type RefundLatestTransactionResponseMessage = "Incompatible with web" | "Successfully found the latest transaction matching given productIdentifier" | "Could not find a product matching the given productIdentifier" | "No transaction for given productIdentifier, or it could not be verified" | "Unknown problem trying to refund latest transaction" | "Problem getting UIScene";
+
 // currentEntitlements interface and types
 
 export interface CurrentEntitlementsResponse {
     responseCode: CurrentEntitlementsResponseCode,
     responseMessage: CurrentEntitlementsResponseMessage,
-    data?: Transaction[],
-    receipt?: string
+    data: Transaction[]
 }
 
 export type CurrentEntitlementsResponseCode = -1 | 0 | 1 | 2
@@ -93,8 +99,8 @@ export type CurrentEntitlementsResponseMessage =
 
 export interface PurchaseProductResponse {
     responseCode: PurchaseProductIOSResponseCode | PurchaseProductAndroidResponseCode
-    responseMessage: PurchaseProductIOSResponseMessage | PurchaseProductAndroidResponseMessage
-    receipt?: string
+    responseMessage: PurchaseProductIOSResponseMessage | PurchaseProductAndroidResponseMessage,
+    data?: Transaction
 }
 
 export type PurchaseProductIOSResponseCode = -1 | 0 | 1 | 2 | 3 | 4 | 5
@@ -126,5 +132,6 @@ export type ProductDetailsResponseMessage =
     "Could not find a product matching the given productIdentifier"
 
 export interface AndroidPurchasedTrigger {
-    fired: boolean;
+    successful: boolean;
+    purchaseToken: string;
 }

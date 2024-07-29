@@ -20,6 +20,7 @@ import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchaseHistoryParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.getcapacitor.App;
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -198,19 +199,8 @@ public class Subscriptions {
                             found = true;
 
                             JSObject data = new JSObject();
-                            String expiryDate = getExpiryDateFromGoogle(productIdentifier, currentPurchaseHistoryRecord.get("purchaseToken").toString());
-                            if(expiryDate != null) {
-                                data.put("expiryDate", expiryDate);
-                            }
-
-                            String dateFormat = "dd-MM-yyyy hh:mm";
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTimeInMillis(Long.parseLong((currentPurchaseHistoryRecord.get("purchaseTime").toString())));
-
-                            data.put("productIdentifier", currentPurchaseHistoryRecord.get("productId"));
-                            data.put("originalId", currentPurchaseHistoryRecord.get("orderId"));
-                            data.put("transactionId", currentPurchaseHistoryRecord.get("orderId"));
+                            data.put("productId", currentPurchaseHistoryRecord.get("productId"));
+                            data.put("purchaseToken", currentPurchaseHistoryRecord.get("purchaseToken"));
 
                             response.put("responseCode", 0);
                             response.put("responseMessage", "Successfully found the latest transaction matching given productIdentifier");
@@ -261,30 +251,23 @@ public class Subscriptions {
 
                             if(amountOfPurchases > 0 ) {
 
-                                ArrayList<JSObject> entitlements = new ArrayList<JSObject>();
+                                JSArray entitlements = new JSArray();
                                 for(int i = 0; i < purchaseList.size(); i++) {
 
                                     Purchase currentPurchase = purchaseList.get(i);
 
-                                    // if(currentPurchase.isAutoRenewing()) {
+                                    String orderId = currentPurchase.getOrderId();
 
-                                        String expiryDate = this.getExpiryDateFromGoogle(currentPurchase.getProducts().get(0), currentPurchase.getPurchaseToken());
-                                        String orderId = currentPurchase.getOrderId();
+                                    String dateFormat = "dd-MM-yyyy hh:mm";
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTimeInMillis(Long.parseLong((String.valueOf(currentPurchase.getPurchaseTime()))));
 
-                                        String dateFormat = "dd-MM-yyyy hh:mm";
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-                                        Calendar calendar = Calendar.getInstance();
-                                        calendar.setTimeInMillis(Long.parseLong((String.valueOf(currentPurchase.getPurchaseTime()))));
-
-                                        entitlements.add(
-                                                new JSObject()
-                                                        .put("productIdentifier", currentPurchase.getProducts().get(0))
-                                                        .put("expiryDate", expiryDate)
-                                                        .put("originalStartDate", simpleDateFormat.format(calendar.getTime()))
-                                                        .put("originalId", orderId)
-                                                        .put("transactionId", orderId)
-                                        );
-                                    // }
+                                    entitlements.put(
+                                            new JSObject()
+                                                    .put("productId", currentPurchase.getProducts().get(0))
+                                                    .put("purchaseToken", currentPurchase.getPurchaseToken())
+                                    );
                                 }
 
                                 response.put("responseCode", 0);
@@ -353,9 +336,9 @@ public class Subscriptions {
                             BillingFlowParams billingFlowParams = builder.build();
                             BillingResult result = billingClient.launchBillingFlow(this.activity, billingFlowParams);
                             Log.i("RESULT", result.toString());
+
                             response.put("responseCode", 0);
                             response.put("responseMessage", "Successfully opened native popover");
-
                         } catch (Exception e) {
                             e.printStackTrace();
                             response.put("responseCode", 1);

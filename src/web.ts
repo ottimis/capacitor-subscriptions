@@ -54,7 +54,5 @@ export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
       responseMessage: 'Incompatible with web',
     }
   }
-  manageSubscriptions(): void {
-
-  }
+  manageSubscriptions(): void {}
 }

@@ -44,8 +44,7 @@ class SubscriptionsWeb extends core.WebPlugin {
             responseMessage: 'Incompatible with web',
         };
     }
-    manageSubscriptions() {
-    }
+    manageSubscriptions() { }
 }
 
 var web = /*#__PURE__*/Object.freeze({

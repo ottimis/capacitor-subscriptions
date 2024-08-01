@@ -43,7 +43,6 @@ export class SubscriptionsWeb extends WebPlugin {
             responseMessage: 'Incompatible with web',
         };
     }
-    manageSubscriptions() {
-    }
+    manageSubscriptions() { }
 }
 //# sourceMappingURL=web.js.map

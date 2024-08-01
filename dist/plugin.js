@@ -43,8 +43,7 @@ var capacitorIap = (function (exports, core) {
                 responseMessage: 'Incompatible with web',
             };
         }
-        manageSubscriptions() {
-        }
+        manageSubscriptions() { }
     }
 
     var web = /*#__PURE__*/Object.freeze({

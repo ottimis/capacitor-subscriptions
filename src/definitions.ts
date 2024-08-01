@@ -36,7 +36,7 @@ export interface SubscriptionsPlugin {
     addListener(
         eventName: 'ANDROID-PURCHASE-RESPONSE',
         listenerFunc: (response: AndroidPurchasedTrigger) => void,
-    ): Promise<PluginListenerHandle> & PluginListenerHandle;
+    ): Promise<PluginListenerHandle>;
 
 }
 

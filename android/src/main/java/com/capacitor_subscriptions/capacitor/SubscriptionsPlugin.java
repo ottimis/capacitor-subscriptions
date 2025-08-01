@@ -128,6 +128,7 @@ public class SubscriptionsPlugin extends Plugin {
 
         String productIdentifier = call.getString("productIdentifier");
         String accountId = call.getString("accountId");
+        String productType = call.getString("productType", "subs"); // Default to subscriptions if not provided
 
         this.acknowledgePurchases = call.getBoolean("acknowledgePurchases") != null ? call.getBoolean("acknowledgePurchases") : Boolean.TRUE;
 
@@ -135,7 +136,7 @@ public class SubscriptionsPlugin extends Plugin {
             call.reject("Must provide a productID");
         }
 
-        implementation.purchaseProduct(productIdentifier, accountId, call);
+        implementation.purchaseProduct(productIdentifier, accountId, productType, call);
 
     }
 
@@ -154,8 +155,9 @@ public class SubscriptionsPlugin extends Plugin {
 
     @PluginMethod
     public void getCurrentEntitlements(PluginCall call) {
+        String productType = call.getString("productType", "subs"); // Default to subscriptions if not provided
 
-        implementation.getCurrentEntitlements(call);
+        implementation.getCurrentEntitlements(productType, call);
 
     }
 

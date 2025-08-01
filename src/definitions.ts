@@ -20,10 +20,14 @@ export interface SubscriptionsPlugin {
         productIdentifier: string,
         accountId?: string,
         acknowledgePurchases?: boolean
+        productType?: AndroidProductType
     }): Promise<PurchaseProductResponse>;
 
 
-    getCurrentEntitlements(options: { sync?: boolean }): Promise<CurrentEntitlementsResponse>;
+    getCurrentEntitlements(options: {
+        productType?: AndroidProductType,
+        sync?: boolean
+    }): Promise<CurrentEntitlementsResponse>;
 
     getLatestTransaction(options: { productIdentifier: string }): Promise<LatestTransactionResponse>;
 
@@ -134,4 +138,9 @@ export type ProductDetailsResponseMessage =
 export interface AndroidPurchasedTrigger {
     successful: boolean;
     purchaseToken: string;
+}
+
+export enum AndroidProductType {
+    SUBS = "subs",
+    INAPP = "inapp"
 }

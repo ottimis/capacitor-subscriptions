@@ -4,9 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  capacitor-iap: link:../../../../../Library/pnpm/global/5/node_modules/capacitor-iap
+
 importers:
 
   .:
+    dependencies:
+      capacitor-iap:
+        specifier: link:../../../../../Library/pnpm/global/5/node_modules/capacitor-iap
+        version: link:../../../../../Library/pnpm/global/5/node_modules/capacitor-iap
     devDependencies:
       '@capacitor/android':
         specifier: ^7.4.2

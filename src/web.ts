@@ -1,12 +1,12 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type {
+import {
   SubscriptionsPlugin,
   ProductDetailsResponse,
   PurchaseProductResponse,
   CurrentEntitlementsResponse,
   LatestTransactionResponse,
-  RefundLatestTransactionResponse
+  RefundLatestTransactionResponse, AndroidProductType
 } from './definitions';
 
 export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
@@ -24,14 +24,14 @@ export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
       responseMessage: 'Incompatible with web',
     }
   }
-  async purchaseProduct(options: { productIdentifier: string, accountId?: string, acknowledgePurchases?: boolean }): Promise< PurchaseProductResponse > {
+  async purchaseProduct(options: { productIdentifier: string, accountId?: string, acknowledgePurchases?: boolean, productType?: AndroidProductType }): Promise< PurchaseProductResponse > {
     options;
     return {
       responseCode: -1,
       responseMessage: 'Incompatible with web',
     }
   }
-  async getCurrentEntitlements(options: { sync: boolean }): Promise< CurrentEntitlementsResponse > {
+  async getCurrentEntitlements(options: { sync: boolean, productType?: AndroidProductType }): Promise< CurrentEntitlementsResponse > {
     options;
     return {
       responseCode: -1,

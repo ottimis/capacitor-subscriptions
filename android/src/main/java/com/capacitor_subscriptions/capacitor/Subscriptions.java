@@ -209,7 +209,7 @@ public class Subscriptions {
 
     }
 
-    public void getCurrentEntitlements(PluginCall call) {
+    public void getCurrentEntitlements(String productType, PluginCall call) {
 
         JSObject response = new JSObject();
 
@@ -217,7 +217,7 @@ public class Subscriptions {
 
             QueryPurchasesParams queryPurchasesParams =
                     QueryPurchasesParams.newBuilder()
-                            .setProductType(BillingClient.ProductType.SUBS)
+                            .setProductType(productType)
                             .build();
 
             billingClient.queryPurchasesAsync(
@@ -278,7 +278,7 @@ public class Subscriptions {
 
     }
 
-    public void purchaseProduct(String productIdentifier, String accountId, PluginCall call) {
+    public void purchaseProduct(String productIdentifier, String accountId, String productType, PluginCall call) {
 
         JSObject response = new JSObject();
 
@@ -286,7 +286,7 @@ public class Subscriptions {
 
             QueryProductDetailsParams.Product productToFind = QueryProductDetailsParams.Product.newBuilder()
                     .setProductId(productIdentifier)
-                    .setProductType(BillingClient.ProductType.SUBS)
+                    .setProductType(productType)
                     .build();
 
             QueryProductDetailsParams queryProductDetailsParams =
@@ -300,15 +300,30 @@ public class Subscriptions {
 
                         try {
                             ProductDetails productDetails = productDetailsList.get(0);
-                            BillingFlowParams.Builder builder = BillingFlowParams.newBuilder()
+                            BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
+                            // Subscriptions
+                            if (productDetails.getSubscriptionOfferDetails() != null && !productDetails.getSubscriptionOfferDetails().isEmpty()) {
+                                builder = builder
                                     .setProductDetailsParamsList(
-                                            List.of(
-                                                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                                                            .setProductDetails(productDetails)
-                                                            .setOfferToken(productDetails.getSubscriptionOfferDetails().get(0).getOfferToken())
-                                                            .build()
-                                            )
+                                        List.of(
+                                            BillingFlowParams.ProductDetailsParams.newBuilder()
+                                                    .setProductDetails(productDetails)
+                                                    .setOfferToken(productDetails.getSubscriptionOfferDetails().get(0).getOfferToken())
+                                                    .build()
+                                        )
                                     );
+                            } else {
+                                // One-time products
+                                builder = builder
+                                    .setProductDetailsParamsList(
+                                        List.of(
+                                            BillingFlowParams.ProductDetailsParams.newBuilder()
+                                                    .setProductDetails(productDetails)
+                                                    .build()
+                                        )
+                                    );
+                            }
+
                             if (accountId != null) {
                                 builder.setObfuscatedAccountId(accountId);
                             }

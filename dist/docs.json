@@ -46,12 +46,12 @@
       },
       {
         "name": "purchaseProduct",
-        "signature": "(options: { productIdentifier: string; accountId?: string; acknowledgePurchases?: boolean; }) => Promise<PurchaseProductResponse>",
+        "signature": "(options: { productIdentifier: string; accountId?: string; acknowledgePurchases?: boolean; productType?: AndroidProductType; }) => Promise<PurchaseProductResponse>",
         "parameters": [
           {
             "name": "options",
             "docs": "",
-            "type": "{ productIdentifier: string; accountId?: string | undefined; acknowledgePurchases?: boolean | undefined; }"
+            "type": "{ productIdentifier: string; accountId?: string | undefined; acknowledgePurchases?: boolean | undefined; productType?: AndroidProductType | undefined; }"
           }
         ],
         "returns": "Promise<PurchaseProductResponse>",
@@ -63,25 +63,27 @@
         ],
         "docs": "Receives the product ID which the user wants to purchase and returns the transaction ID",
         "complexTypes": [
-          "PurchaseProductResponse"
+          "PurchaseProductResponse",
+          "AndroidProductType"
         ],
         "slug": "purchaseproduct"
       },
       {
         "name": "getCurrentEntitlements",
-        "signature": "(options: { sync?: boolean; }) => Promise<CurrentEntitlementsResponse>",
+        "signature": "(options: { productType?: AndroidProductType; sync?: boolean; }) => Promise<CurrentEntitlementsResponse>",
         "parameters": [
           {
             "name": "options",
             "docs": "",
-            "type": "{ sync?: boolean | undefined; }"
+            "type": "{ productType?: AndroidProductType | undefined; sync?: boolean | undefined; }"
           }
         ],
         "returns": "Promise<CurrentEntitlementsResponse>",
         "tags": [],
         "docs": "",
         "complexTypes": [
-          "CurrentEntitlementsResponse"
+          "CurrentEntitlementsResponse",
+          "AndroidProductType"
         ],
         "slug": "getcurrententitlements"
       },
@@ -455,7 +457,26 @@
       ]
     }
   ],
-  "enums": [],
+  "enums": [
+    {
+      "name": "AndroidProductType",
+      "slug": "androidproducttype",
+      "members": [
+        {
+          "name": "SUBS",
+          "value": "\"subs\"",
+          "tags": [],
+          "docs": ""
+        },
+        {
+          "name": "INAPP",
+          "value": "\"inapp\"",
+          "tags": [],
+          "docs": ""
+        }
+      ]
+    }
+  ],
   "typeAliases": [
     {
       "name": "ProductDetailsResponseCode",

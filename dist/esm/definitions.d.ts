@@ -23,8 +23,10 @@ export interface SubscriptionsPlugin {
         productIdentifier: string;
         accountId?: string;
         acknowledgePurchases?: boolean;
+        productType?: AndroidProductType;
     }): Promise<PurchaseProductResponse>;
     getCurrentEntitlements(options: {
+        productType?: AndroidProductType;
         sync?: boolean;
     }): Promise<CurrentEntitlementsResponse>;
     getLatestTransaction(options: {
@@ -90,4 +92,8 @@ export type ProductDetailsResponseMessage = "Incompatible with web" | "Successfu
 export interface AndroidPurchasedTrigger {
     successful: boolean;
     purchaseToken: string;
+}
+export declare enum AndroidProductType {
+    SUBS = "subs",
+    INAPP = "inapp"
 }

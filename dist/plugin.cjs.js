@@ -2,6 +2,12 @@
 
 var core = require('@capacitor/core');
 
+exports.AndroidProductType = void 0;
+(function (AndroidProductType) {
+    AndroidProductType["SUBS"] = "subs";
+    AndroidProductType["INAPP"] = "inapp";
+})(exports.AndroidProductType || (exports.AndroidProductType = {}));
+
 const Subscriptions = core.registerPlugin('Subscriptions', {
     web: () => Promise.resolve().then(function () { return web; }).then(m => new m.SubscriptionsWeb()),
 });

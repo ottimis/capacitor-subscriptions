@@ -84,13 +84,5 @@
     "android": {
       "src": "android"
     }
-  },
-  "pnpm": {
-    "overrides": {
-      "capacitor-iap": "link:../../../../../Library/pnpm/global/5/node_modules/capacitor-iap"
-    }
-  },
-  "dependencies": {
-    "capacitor-iap": "link:../../../../../Library/pnpm/global/5/node_modules/capacitor-iap"
   }
 }

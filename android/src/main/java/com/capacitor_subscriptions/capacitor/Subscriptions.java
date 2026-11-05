@@ -9,9 +9,7 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchaseHistoryRecord;
 import com.android.billingclient.api.QueryProductDetailsParams;
-import com.android.billingclient.api.QueryPurchaseHistoryParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -92,10 +90,11 @@ public class Subscriptions {
 
             billingClient.queryProductDetailsAsync(
                     queryProductDetailsParams,
-                    (billingResult, productDetailsList) -> {
+                    (billingResult, queryProductDetailsResult) -> {
 
                         try {
 
+                            List<ProductDetails> productDetailsList = queryProductDetailsResult.getProductDetailsList();
                             ProductDetails productDetails = productDetailsList.get(0);
                             String productId = productDetails.getProductId();
                             String title = productDetails.getTitle();
@@ -154,15 +153,17 @@ public class Subscriptions {
 
         if(billingClientIsConnected == 1) {
 
-            QueryPurchaseHistoryParams queryPurchaseHistoryParams =
-                    QueryPurchaseHistoryParams.newBuilder()
+            // Billing 8 removed queryPurchaseHistoryAsync: only active (or not yet consumed)
+            // purchases owned by the user are returned. Expired or consumed purchases are no longer found.
+            QueryPurchasesParams queryPurchasesParams =
+                    QueryPurchasesParams.newBuilder()
                             .setProductType(BillingClient.ProductType.SUBS)
                             .build();
 
 
-            billingClient.queryPurchaseHistoryAsync(queryPurchaseHistoryParams, (BillingResult billingResult, List<PurchaseHistoryRecord> list) -> {
+            billingClient.queryPurchasesAsync(queryPurchasesParams, (BillingResult billingResult, List<Purchase> list) -> {
 
-                // Try to loop through the list until we find a purchase history record associated with the passed in productIdentifier.
+                // Try to loop through the list until we find a purchase associated with the passed in productIdentifier.
                 // If we do, then set found to true to break out of the loop, then compile a response with necessary data. Otherwise compile
                 // a response saying that the there were not transactions for the given productIdentifier.
                 int i = 0;
@@ -170,16 +171,16 @@ public class Subscriptions {
                 while (list != null && (i < list.size() && !found)) {
                     try {
 
-                        JSObject currentPurchaseHistoryRecord = new JSObject(list.get(i).getOriginalJson());
-                        Log.i("PurchaseHistory", currentPurchaseHistoryRecord.toString());
+                        Purchase currentPurchase = list.get(i);
+                        Log.i("PurchaseHistory", currentPurchase.getOriginalJson());
 
-                        if (currentPurchaseHistoryRecord.get("productId").equals(productIdentifier)) {
+                        if (currentPurchase.getProducts().contains(productIdentifier)) {
 
                             found = true;
 
                             JSObject data = new JSObject();
-                            data.put("productId", currentPurchaseHistoryRecord.get("productId"));
-                            data.put("purchaseToken", currentPurchaseHistoryRecord.get("purchaseToken"));
+                            data.put("productId", productIdentifier);
+                            data.put("purchaseToken", currentPurchase.getPurchaseToken());
 
                             response.put("responseCode", 0);
                             response.put("responseMessage", "Successfully found the latest transaction matching given productIdentifier");
@@ -296,9 +297,10 @@ public class Subscriptions {
 
             billingClient.queryProductDetailsAsync(
                     queryProductDetailsParams,
-                    (billingResult1, productDetailsList) -> {
+                    (billingResult1, queryProductDetailsResult) -> {
 
                         try {
+                            List<ProductDetails> productDetailsList = queryProductDetailsResult.getProductDetailsList();
                             ProductDetails productDetails = productDetailsList.get(0);
                             BillingFlowParams.Builder builder = BillingFlowParams.newBuilder();
                             // Subscriptions

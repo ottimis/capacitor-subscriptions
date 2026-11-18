@@ -10,94 +10,104 @@ import StoreKit
 public class SubscriptionsPlugin: CAPPlugin {
 
     // Allows us to execute the actual code from Subscriptions.swift file
-    private let implementation = Subscriptions();
+    private let implementation = Subscriptions()
 
     @objc func echo(_ call: CAPPluginCall) {
         let value = call.getString("value") ?? ""
-        
+
         call.resolve([
             "value": value
         ])
     }
 
-    
-    @available(iOS 15.0.0, *)
     @objc func getProductDetails(_ call: CAPPluginCall) {
-        
-        guard let productIdentifier = call.getString("productIdentifier") as? String else {
-           call.reject("Must provide a productID")
-           return;
+
+        guard let productIdentifier = call.getString("productIdentifier") else {
+            call.reject("Must provide a productID")
+            return
         }
 
-        async {
-
-            let response = await implementation.getProductDetails(productIdentifier);
-            call.resolve(response);
-
+        Task {
+            let response = await implementation.getProductDetails(productIdentifier)
+            call.resolve(response)
         }
     }
 
-    @available(iOS 15.0.0, *)
     @objc func purchaseProduct(_ call: CAPPluginCall) {
-        
+
         guard let productIdentifier = call.getString("productIdentifier") else {
-           call.reject("Must provide a productID")
-           return;
+            call.reject("Must provide a productID")
+            return
         }
         let accountId = call.getString("accountId")
 
-        async {
-
-            let response = await implementation.purchaseProduct(productIdentifier, accountId);
-            call.resolve(response);
-
+        Task {
+            let response = await implementation.purchaseProduct(productIdentifier, accountId)
+            call.resolve(response)
         }
-
     }
 
-    @available(iOS 15.0.0, *)
     @objc func getCurrentEntitlements(_ call: CAPPluginCall) {
         let sync = call.getBool("sync") ?? false
-        
-        async {
-            let response = await implementation.getCurrentEntitlements(sync: sync);
-            call.resolve(response);
-        }
 
+        Task {
+            let response = await implementation.getCurrentEntitlements(sync: sync)
+            call.resolve(response)
+        }
     }
 
-    @available(iOS 15.0.0, *)
     @objc func getLatestTransaction(_ call: CAPPluginCall) {
 
-        guard let productIdentifier = call.getString("productIdentifier") as? String else {
-           call.reject("Must provide a productID")
-           return;
-        }
-        
-        async {
-
-            let response = await implementation.getLatestTransaction(productIdentifier);
-            call.resolve(response);
-
+        guard let productIdentifier = call.getString("productIdentifier") else {
+            call.reject("Must provide a productID")
+            return
         }
 
+        Task {
+            let response = await implementation.getLatestTransaction(productIdentifier)
+            call.resolve(response)
+        }
     }
 
-    @available(iOS 15.0.0, *)
+    @objc func refundLatestTransaction(_ call: CAPPluginCall) {
+
+        guard let productIdentifier = call.getString("productIdentifier") else {
+            call.reject("Must provide a productID")
+            return
+        }
+
+        Task {
+            let response = await implementation.refundLatestTransaction(productIdentifier)
+            call.resolve(response)
+        }
+    }
+
     @objc func manageSubscriptions(_ call: CAPPluginCall) {
-        
-        async {
 
-            do {
-                await implementation.manageSubscriptions();
-                call.resolve(["Success": "Opened"])
-            } catch {
-                print(error.localizedDescription);
-                call.reject(error.localizedDescription)
-            }
-
+        Task {
+            await implementation.manageSubscriptions()
+            call.resolve(["Success": "Opened"])
         }
-
     }
-    
+
+    /// Deprecated: Android-only and a no-op since 8.0.0. Resolves immediately.
+    @objc func setGoogleVerificationDetails(_ call: CAPPluginCall) {
+        call.resolve()
+    }
+
+    /// Android only: StoreKit has no acknowledge step.
+    @objc func acknowledgePurchase(_ call: CAPPluginCall) {
+        call.resolve([
+            "responseCode": -1,
+            "responseMessage": "Not supported on iOS"
+        ])
+    }
+
+    /// Android only: on iOS consumables are consumed by finishing the transaction, which the plugin already does.
+    @objc func consumePurchase(_ call: CAPPluginCall) {
+        call.resolve([
+            "responseCode": -1,
+            "responseMessage": "Not supported on iOS"
+        ])
+    }
 }

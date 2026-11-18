@@ -9,7 +9,9 @@ CAP_PLUGIN(SubscriptionsPlugin, "Subscriptions",
            CAP_PLUGIN_METHOD(purchaseProduct, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getCurrentEntitlements, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getLatestTransaction, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(refundLatestTransaction, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(manageSubscriptions, CAPPluginReturnPromise);
-           CAP_PLUGIN_METHOD(getTrialStatus, CAPPluginReturnPromise);
-           CAP_PLUGIN_METHOD(startTrial, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(setGoogleVerificationDetails, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(acknowledgePurchase, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(consumePurchase, CAPPluginReturnPromise);
 )

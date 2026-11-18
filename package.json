@@ -1,6 +1,6 @@
 {
   "name": "@ottimis/capacitor-iap",
-  "version": "7.1.0",
+  "version": "8.0.0",
   "description": "A capacitor plugin which manage IAP handling - implementing StoreKit 2 and Google Billing",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -10,8 +10,11 @@
     "android/src/main/",
     "android/build.gradle",
     "dist/",
-    "ios/Plugin/",
-    "OttimisCapacitorIap.podspec"
+    "ios/Sources",
+    "ios/Tests",
+    "Package.swift",
+    "OttimisCapacitorIap.podspec",
+    "CHANGELOG.md"
   ],
   "authors": [
     {
@@ -36,9 +39,12 @@
     "iap"
   ],
   "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
-    "verify:ios": "cd ios && pod install && xcodebuild -workspace Plugin.xcworkspace -scheme Plugin && cd ..",
+    "verify:ios": "xcodebuild -scheme OttimisCapacitorIap -destination generic/platform=iOS",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
@@ -46,18 +52,18 @@
     "eslint": "eslint . --ext ts",
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\" --plugin=prettier-plugin-java",
     "swiftlint": "node-swiftlint",
-    "docgen": "docgen --api SubscriptionsPlugin --output-readme README.md --output-json dist/docs.json",
+    "docgen": "docgen --project tsconfig.docgen.json --api SubscriptionsPlugin --output-readme README.md --output-json dist/docs.json",
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.mjs --bundleConfigAsCjs",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^7.4.2",
-    "@capacitor/cli": "^7.4.2",
-    "@capacitor/core": "^7.4.2",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "@capacitor/docgen": "^0.3.0",
-    "@capacitor/ios": "^7.4.2",
+    "@capacitor/ios": "^8.0.0",
     "@ionic/eslint-config": "^0.4.0",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^2.0.0",
@@ -70,7 +76,7 @@
     "typescript": "~5.2.2"
   },
   "peerDependencies": {
-    "@capacitor/core": ">=7.0.0"
+    "@capacitor/core": ">=8.0.0"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",

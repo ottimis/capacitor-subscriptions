@@ -7,7 +7,21 @@ import StoreKit
  * here: https://capacitorjs.com/docs/plugins/ios
  */
 @objc(SubscriptionsPlugin)
-public class SubscriptionsPlugin: CAPPlugin {
+public class SubscriptionsPlugin: CAPPlugin, CAPBridgedPlugin {
+    public let identifier = "SubscriptionsPlugin"
+    public let jsName = "Subscriptions"
+    public let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getProductDetails", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "purchaseProduct", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getCurrentEntitlements", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getLatestTransaction", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "refundLatestTransaction", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "manageSubscriptions", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setGoogleVerificationDetails", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "acknowledgePurchase", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "consumePurchase", returnType: CAPPluginReturnPromise)
+    ]
 
     // Allows us to execute the actual code from Subscriptions.swift file
     private let implementation = Subscriptions()

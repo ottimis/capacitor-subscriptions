@@ -24,6 +24,9 @@ export interface SubscriptionsPlugin {
      * On iOS the promise resolves with the transaction. On Android it resolves as soon as the native popover
      * is open: the outcome arrives with the `ANDROID-PURCHASE-RESPONSE` event.
      *
+     * `accountId` (optional): on iOS it must be a UUID and becomes the `appAccountToken` (otherwise the
+     * call resolves with `1` "Invalid accountId"); on Android it becomes the `obfuscatedAccountId`.
+     *
      * `acknowledgePurchases` (Android, default `true`): when `false` the plugin does not acknowledge the
      * purchase, and the app or its backend must do it within 3 days (see `acknowledgePurchase`).
      */
@@ -37,7 +40,8 @@ export interface SubscriptionsPlugin {
     /**
      * Returns the purchases the user currently owns.
      *
-     * On Android each entry has `isAcknowledged` and `purchaseState`, so that purchases still waiting to be
+     * On Android each call returns one product type, `productType` (default `subs`); on iOS all the current
+     * entitlements are returned. On Android each entry has `isAcknowledged` and `purchaseState`, so that purchases still waiting to be
      * acknowledged can be recovered.
      */
     getCurrentEntitlements(options: {
@@ -83,7 +87,7 @@ export interface SubscriptionsPlugin {
     consumePurchase(options: { purchaseToken: string }): Promise<ConsumePurchaseResponse>;
 
     /**
-     * Does nothing and resolves immediately, on every platform.
+     * **Deprecated**: does nothing and resolves immediately, on every platform. Remove the call.
      *
      * @deprecated The server-side verification it configured is no longer used. It will be removed in a
      * future major version.

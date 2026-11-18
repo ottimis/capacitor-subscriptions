@@ -7,7 +7,7 @@
     "methods": [
       {
         "name": "echo",
-        "signature": "(options: { value: string; }) => any",
+        "signature": "(options: { value: string; }) => Promise<{ value: string; }>",
         "parameters": [
           {
             "name": "options",
@@ -15,7 +15,7 @@
             "type": "{ value: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<{ value: string; }>",
         "tags": [],
         "docs": "A test method which just returns what is passed in",
         "complexTypes": [],
@@ -23,7 +23,7 @@
       },
       {
         "name": "getProductDetails",
-        "signature": "(options: { productIdentifier: string; productType?: AndroidProductType; }) => any",
+        "signature": "(options: { productIdentifier: string; productType?: AndroidProductType; }) => Promise<ProductDetailsResponse>",
         "parameters": [
           {
             "name": "options",
@@ -31,18 +31,18 @@
             "type": "{ productIdentifier: string; productType?: AndroidProductType | undefined; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<ProductDetailsResponse>",
         "tags": [],
         "docs": "Receives a product ID and returns the product details.\n\nOn Android `productType` selects subscriptions (default) or one-time products. For subscriptions,\n`price` is the first pricing phase of the offer that `purchaseProduct` buys, and `pricingPhases`\nlists all the phases of that offer.",
         "complexTypes": [
-          "AndroidProductType",
-          "ProductDetailsResponse"
+          "ProductDetailsResponse",
+          "AndroidProductType"
         ],
         "slug": "getproductdetails"
       },
       {
         "name": "purchaseProduct",
-        "signature": "(options: { productIdentifier: string; accountId?: string; acknowledgePurchases?: boolean; productType?: AndroidProductType; }) => any",
+        "signature": "(options: { productIdentifier: string; accountId?: string; acknowledgePurchases?: boolean; productType?: AndroidProductType; }) => Promise<PurchaseProductResponse>",
         "parameters": [
           {
             "name": "options",
@@ -50,18 +50,18 @@
             "type": "{ productIdentifier: string; accountId?: string | undefined; acknowledgePurchases?: boolean | undefined; productType?: AndroidProductType | undefined; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<PurchaseProductResponse>",
         "tags": [],
-        "docs": "Starts the purchase of a product.\n\nOn iOS the promise resolves with the transaction. On Android it resolves as soon as the native popover\nis open: the outcome arrives with the `ANDROID-PURCHASE-RESPONSE` event.\n\n`acknowledgePurchases` (Android, default `true`): when `false` the plugin does not acknowledge the\npurchase, and the app or its backend must do it within 3 days (see `acknowledgePurchase`).",
+        "docs": "Starts the purchase of a product.\n\nOn iOS the promise resolves with the transaction. On Android it resolves as soon as the native popover\nis open: the outcome arrives with the `ANDROID-PURCHASE-RESPONSE` event.\n\n`accountId` (optional): on iOS it must be a UUID and becomes the `appAccountToken` (otherwise the\ncall resolves with `1` \"Invalid accountId\"); on Android it becomes the `obfuscatedAccountId`.\n\n`acknowledgePurchases` (Android, default `true`): when `false` the plugin does not acknowledge the\npurchase, and the app or its backend must do it within 3 days (see `acknowledgePurchase`).",
         "complexTypes": [
-          "AndroidProductType",
-          "PurchaseProductResponse"
+          "PurchaseProductResponse",
+          "AndroidProductType"
         ],
         "slug": "purchaseproduct"
       },
       {
         "name": "getCurrentEntitlements",
-        "signature": "(options: { productType?: AndroidProductType; sync?: boolean; }) => any",
+        "signature": "(options: { productType?: AndroidProductType; sync?: boolean; }) => Promise<CurrentEntitlementsResponse>",
         "parameters": [
           {
             "name": "options",
@@ -69,18 +69,18 @@
             "type": "{ productType?: AndroidProductType | undefined; sync?: boolean | undefined; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<CurrentEntitlementsResponse>",
         "tags": [],
-        "docs": "Returns the purchases the user currently owns.\n\nOn Android each entry has `isAcknowledged` and `purchaseState`, so that purchases still waiting to be\nacknowledged can be recovered.",
+        "docs": "Returns the purchases the user currently owns.\n\nOn Android each call returns one product type, `productType` (default `subs`); on iOS all the current\nentitlements are returned. On Android each entry has `isAcknowledged` and `purchaseState`, so that purchases still waiting to be\nacknowledged can be recovered.",
         "complexTypes": [
-          "AndroidProductType",
-          "CurrentEntitlementsResponse"
+          "CurrentEntitlementsResponse",
+          "AndroidProductType"
         ],
         "slug": "getcurrententitlements"
       },
       {
         "name": "getLatestTransaction",
-        "signature": "(options: { productIdentifier: string; }) => any",
+        "signature": "(options: { productIdentifier: string; }) => Promise<LatestTransactionResponse>",
         "parameters": [
           {
             "name": "options",
@@ -88,7 +88,7 @@
             "type": "{ productIdentifier: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<LatestTransactionResponse>",
         "tags": [],
         "docs": "Returns the latest transaction of a product.\n\nOn Android (Billing 8) only subscriptions the user currently owns are found, including suspended\nones (account hold, paused), flagged with `isSuspended`. Expired subscriptions are not returned.",
         "complexTypes": [
@@ -98,7 +98,7 @@
       },
       {
         "name": "refundLatestTransaction",
-        "signature": "(options: { productIdentifier: string; }) => any",
+        "signature": "(options: { productIdentifier: string; }) => Promise<RefundLatestTransactionResponse>",
         "parameters": [
           {
             "name": "options",
@@ -106,7 +106,7 @@
             "type": "{ productIdentifier: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<RefundLatestTransactionResponse>",
         "tags": [],
         "docs": "Opens the refund request sheet for the latest transaction of a product. iOS only: on Android it\nresolves with `-1`.",
         "complexTypes": [
@@ -132,7 +132,7 @@
       },
       {
         "name": "acknowledgePurchase",
-        "signature": "(options: { purchaseToken: string; }) => any",
+        "signature": "(options: { purchaseToken: string; }) => Promise<AcknowledgePurchaseResponse>",
         "parameters": [
           {
             "name": "options",
@@ -140,7 +140,7 @@
             "type": "{ purchaseToken: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<AcknowledgePurchaseResponse>",
         "tags": [
           {
             "name": "since",
@@ -155,7 +155,7 @@
       },
       {
         "name": "consumePurchase",
-        "signature": "(options: { purchaseToken: string; }) => any",
+        "signature": "(options: { purchaseToken: string; }) => Promise<ConsumePurchaseResponse>",
         "parameters": [
           {
             "name": "options",
@@ -163,7 +163,7 @@
             "type": "{ purchaseToken: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<ConsumePurchaseResponse>",
         "tags": [
           {
             "name": "since",
@@ -178,7 +178,7 @@
       },
       {
         "name": "setGoogleVerificationDetails",
-        "signature": "(options: { googleVerifyEndpoint: string; bid: string; }) => any",
+        "signature": "(options: { googleVerifyEndpoint: string; bid: string; }) => Promise<void>",
         "parameters": [
           {
             "name": "options",
@@ -186,20 +186,20 @@
             "type": "{ googleVerifyEndpoint: string; bid: string; }"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<void>",
         "tags": [
           {
             "name": "deprecated",
             "text": "The server-side verification it configured is no longer used. It will be removed in a\nfuture major version."
           }
         ],
-        "docs": "Does nothing and resolves immediately, on every platform.",
+        "docs": "**Deprecated**: does nothing and resolves immediately, on every platform. Remove the call.",
         "complexTypes": [],
         "slug": "setgoogleverificationdetails"
       },
       {
         "name": "addListener",
-        "signature": "(eventName: 'ANDROID-PURCHASE-RESPONSE', listenerFunc: (response: AndroidPurchasedTrigger) => void) => any",
+        "signature": "(eventName: 'ANDROID-PURCHASE-RESPONSE', listenerFunc: (response: AndroidPurchasedTrigger) => void) => Promise<PluginListenerHandle>",
         "parameters": [
           {
             "name": "eventName",
@@ -212,12 +212,12 @@
             "type": "(response: AndroidPurchasedTrigger) => void"
           }
         ],
-        "returns": "any",
+        "returns": "Promise<PluginListenerHandle>",
         "tags": [],
         "docs": "Android: outcome of a purchase. Fired when the billing flow started by `purchaseProduct` ends, and for\npurchases made outside the app (promo codes, Play Store) while it is running.",
         "complexTypes": [
-          "AndroidPurchasedTrigger",
-          "PluginListenerHandle"
+          "PluginListenerHandle",
+          "AndroidPurchasedTrigger"
         ],
         "slug": "addlistenerandroid-purchase-response-"
       }
@@ -349,7 +349,7 @@
           "complexTypes": [
             "AndroidPricingPhase"
           ],
-          "type": "{} | undefined"
+          "type": "AndroidPricingPhase[] | undefined"
         }
       ]
     },
@@ -419,7 +419,7 @@
             "PurchaseProductIOSResponseCode",
             "PurchaseProductAndroidResponseCode"
           ],
-          "type": "0 | 1 | -1 | 2 | 3 | 500 | 502 | 4 | 5"
+          "type": "0 | 2 | 1 | 5 | 4 | 3 | -1 | 500 | 502"
         },
         {
           "name": "responseMessage",
@@ -484,7 +484,7 @@
           "tags": [],
           "docs": "Android: all the products of the purchase.",
           "complexTypes": [],
-          "type": "{} | undefined"
+          "type": "string[] | undefined"
         },
         {
           "name": "isAcknowledged",
@@ -543,7 +543,7 @@
           "complexTypes": [
             "Transaction"
           ],
-          "type": "{}"
+          "type": "Transaction[]"
         }
       ]
     },
@@ -665,6 +665,22 @@
       ]
     },
     {
+      "name": "PluginListenerHandle",
+      "slug": "pluginlistenerhandle",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "remove",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "() => Promise<void>"
+        }
+      ]
+    },
+    {
       "name": "AndroidPurchasedTrigger",
       "slug": "androidpurchasedtrigger",
       "docs": "",
@@ -697,7 +713,7 @@
           "tags": [],
           "docs": "",
           "complexTypes": [],
-          "type": "{} | undefined"
+          "type": "string[] | undefined"
         },
         {
           "name": "isAcknowledged",
@@ -721,22 +737,6 @@
           "docs": "Google Play response code of the purchase, or of the acknowledge when it failed.",
           "complexTypes": [],
           "type": "number | undefined"
-        }
-      ]
-    },
-    {
-      "name": "PluginListenerHandle",
-      "slug": "pluginlistenerhandle",
-      "docs": "",
-      "tags": [],
-      "methods": [],
-      "properties": [
-        {
-          "name": "remove",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "() => any"
         }
       ]
     }

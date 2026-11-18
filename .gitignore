@@ -4,8 +4,16 @@ node_modules
 # iOS files
 Pods
 Podfile.lock
+Package.resolved
 Build
 xcuserdata
+/.build
+/Packages
+DerivedData/
+.swiftpm/
+
+# npm pack output
+*.tgz
 
 # macOS files
 .DS_Store

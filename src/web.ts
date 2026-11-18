@@ -1,23 +1,27 @@
 import { WebPlugin } from '@capacitor/core';
 
-import {
+import type {
   SubscriptionsPlugin,
   ProductDetailsResponse,
   PurchaseProductResponse,
   CurrentEntitlementsResponse,
   LatestTransactionResponse,
-  RefundLatestTransactionResponse, AndroidProductType
+  RefundLatestTransactionResponse,
+  AcknowledgePurchaseResponse,
+  ConsumePurchaseResponse,
+  AndroidProductType
 } from './definitions';
 
 export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
-  setGoogleVerificationDetails(options: { googleVerifyEndpoint: string, bid: string }): void {
+  /** @deprecated Does nothing. */
+  async setGoogleVerificationDetails(options: { googleVerifyEndpoint: string, bid: string }): Promise<void> {
     options;
   }
   async echo(options: { value: string }): Promise<{ value: string }> {
     console.log('ECHO', options);
     return options;
   }
-  async getProductDetails(options: { productIdentifier: string }): Promise< ProductDetailsResponse > {
+  async getProductDetails(options: { productIdentifier: string, productType?: AndroidProductType }): Promise< ProductDetailsResponse > {
     options;
     return {
       responseCode: -1,
@@ -31,7 +35,7 @@ export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
       responseMessage: 'Incompatible with web',
     }
   }
-  async getCurrentEntitlements(options: { sync: boolean, productType?: AndroidProductType }): Promise< CurrentEntitlementsResponse > {
+  async getCurrentEntitlements(options: { sync?: boolean, productType?: AndroidProductType }): Promise< CurrentEntitlementsResponse > {
     options;
     return {
       responseCode: -1,
@@ -54,5 +58,24 @@ export class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
       responseMessage: 'Incompatible with web',
     }
   }
-  manageSubscriptions(): void {}
+
+  async acknowledgePurchase(options: { purchaseToken: string }): Promise< AcknowledgePurchaseResponse > {
+    options;
+    return {
+      responseCode: -1,
+      responseMessage: 'Incompatible with web',
+    }
+  }
+
+  async consumePurchase(options: { purchaseToken: string }): Promise< ConsumePurchaseResponse > {
+    options;
+    return {
+      responseCode: -1,
+      responseMessage: 'Incompatible with web',
+    }
+  }
+
+  manageSubscriptions(options?: { productIdentifier?: string, bid?: string }): void {
+    options;
+  }
 }

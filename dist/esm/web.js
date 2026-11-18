@@ -1,6 +1,7 @@
 import { WebPlugin } from '@capacitor/core';
 export class SubscriptionsWeb extends WebPlugin {
-    setGoogleVerificationDetails(options) {
+    /** @deprecated Does nothing. */
+    async setGoogleVerificationDetails(options) {
         options;
     }
     async echo(options) {
@@ -43,6 +44,22 @@ export class SubscriptionsWeb extends WebPlugin {
             responseMessage: 'Incompatible with web',
         };
     }
-    manageSubscriptions() { }
+    async acknowledgePurchase(options) {
+        options;
+        return {
+            responseCode: -1,
+            responseMessage: 'Incompatible with web',
+        };
+    }
+    async consumePurchase(options) {
+        options;
+        return {
+            responseCode: -1,
+            responseMessage: 'Incompatible with web',
+        };
+    }
+    manageSubscriptions(options) {
+        options;
+    }
 }
 //# sourceMappingURL=web.js.map

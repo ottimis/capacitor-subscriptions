@@ -1,10 +1,11 @@
 import { WebPlugin } from '@capacitor/core';
-import { SubscriptionsPlugin, ProductDetailsResponse, PurchaseProductResponse, CurrentEntitlementsResponse, LatestTransactionResponse, RefundLatestTransactionResponse, AndroidProductType } from './definitions';
+import type { SubscriptionsPlugin, ProductDetailsResponse, PurchaseProductResponse, CurrentEntitlementsResponse, LatestTransactionResponse, RefundLatestTransactionResponse, AcknowledgePurchaseResponse, ConsumePurchaseResponse, AndroidProductType } from './definitions';
 export declare class SubscriptionsWeb extends WebPlugin implements SubscriptionsPlugin {
+    /** @deprecated Does nothing. */
     setGoogleVerificationDetails(options: {
         googleVerifyEndpoint: string;
         bid: string;
-    }): void;
+    }): Promise<void>;
     echo(options: {
         value: string;
     }): Promise<{
@@ -12,6 +13,7 @@ export declare class SubscriptionsWeb extends WebPlugin implements Subscriptions
     }>;
     getProductDetails(options: {
         productIdentifier: string;
+        productType?: AndroidProductType;
     }): Promise<ProductDetailsResponse>;
     purchaseProduct(options: {
         productIdentifier: string;
@@ -20,7 +22,7 @@ export declare class SubscriptionsWeb extends WebPlugin implements Subscriptions
         productType?: AndroidProductType;
     }): Promise<PurchaseProductResponse>;
     getCurrentEntitlements(options: {
-        sync: boolean;
+        sync?: boolean;
         productType?: AndroidProductType;
     }): Promise<CurrentEntitlementsResponse>;
     getLatestTransaction(options: {
@@ -29,5 +31,14 @@ export declare class SubscriptionsWeb extends WebPlugin implements Subscriptions
     refundLatestTransaction(options: {
         productIdentifier: string;
     }): Promise<RefundLatestTransactionResponse>;
-    manageSubscriptions(): void;
+    acknowledgePurchase(options: {
+        purchaseToken: string;
+    }): Promise<AcknowledgePurchaseResponse>;
+    consumePurchase(options: {
+        purchaseToken: string;
+    }): Promise<ConsumePurchaseResponse>;
+    manageSubscriptions(options?: {
+        productIdentifier?: string;
+        bid?: string;
+    }): void;
 }
